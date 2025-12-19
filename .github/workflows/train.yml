@@ -9,16 +9,24 @@ jobs:
     timeout-minutes: 360
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install deps
+      - name: Install deps (force reinstall, no cache)
         run: |
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install --no-cache-dir --force-reinstall -r requirements.txt
+          python - << 'EOF'
+          import transformers, accelerate, torch
+          print("transformers:", transformers.__version__)
+          print("accelerate:", accelerate.__version__)
+          print("torch:", torch.__version__)
+          EOF
 
       - name: Crawl Wikipedia
         run: python crawl_wiki.py
