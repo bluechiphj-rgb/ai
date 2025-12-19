@@ -1,6 +1,5 @@
-transformers
+transformers[torch]
 datasets
-torch
 accelerate>=0.26.0
 beautifulsoup4
 requests
