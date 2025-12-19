@@ -1,0 +1,42 @@
+name: Train webbrain model
+
+on:
+  workflow_dispatch:
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+
+      - name: Crawl Wikipedia
+        run: python crawl_wiki.py
+
+      - name: Crawl NamuWiki
+        run: python crawl_namu.py
+
+      - name: Build dataset
+        run: python build_dataset.py
+
+      - name: Train model
+        run: python train.py
+
+      - name: Zip model
+        run: zip -r model_out.zip out/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trained-model
+          path: model_out.zip
