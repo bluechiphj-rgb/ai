@@ -1,0 +1,15 @@
+name: kwonpop-webbrain-ko-train
+image: python:3.10-slim
+command:
+  - bash
+  - -lc
+  - |
+    pip install -r requirements.txt
+    python crawl_wiki.py
+    python crawl_namu.py
+    python build_dataset.py
+    python train.py
+resources:
+  cpu: 4
+  memory: 16Gi
+timeout: 6h
